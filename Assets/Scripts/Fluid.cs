@@ -4,11 +4,11 @@ using UnityEngine;
 public class Fluid : MonoBehaviour
 {
     const int N = 256; // size
-    const int ITER = 10; // iteration
+    const int ITER = 4; // iteration
 
-    float dt; // timestep
-    float diff; // diffusion
-    float visc; // viscosity
+    [SerializeField] float dt = 0.1f; // timestep
+    [SerializeField] float diff = 1.0f; // diffusion
+    [SerializeField] float visc = 1.0f; // viscosity
 
     float[] s;
     float[] density;
@@ -21,22 +21,31 @@ public class Fluid : MonoBehaviour
 
     static int IX(int x, int y) => x + y * N;
 
-    public Fluid(float dt, float diff, float visc)
+    private void Start()
     {
-        this.dt = dt;
-        this.diff = diff;
-        this.visc = visc;
-
         int area = N * N;
-
-        this.s = new float[area];
-        this.density = new float[area];
 
         this.vx = new float[area];
         this.vy = new float[area];
 
         this.vx0 = new float[area];
         this.vy0 = new float[area];
+
+        this.s = new float[area];
+        this.density = new float[area];
+
+        diffuse(1, vx0, vx, visc, dt);
+        diffuse(2, vy0, vy, visc, dt);
+
+        project(vx0, vy0, vx, vy);
+
+        advect(1, vx, vx0, vx0, vy0, dt);
+        advect(2, vy, vy0, vx0, vy0, dt);
+
+        project(vx, vy, vx0, vy0);
+
+        diffuse(0, s, density, diff, dt);
+        advect(0, density, s, vx, vy, dt);
     }
     void AddDensity(int x, int y, float amount)
     {
@@ -82,6 +91,7 @@ public class Fluid : MonoBehaviour
     }
 
     // fluid in == fluid out
+    // Make the fluid incompressible
     static void project(float[] velocX, float[] velocY, float[] p, float[] div)
     {
         for (int j = 1; j < N - 1; j++)
@@ -116,6 +126,7 @@ public class Fluid : MonoBehaviour
     }
 
     // Similar to diffuse function, but advection is responsible for actually moving things around
+    // Move the velocity field
     static void advect(int b, float[] d, float[] d0, float[] velocX, float[] velocY, float dt)
     {
         float i0, i1, j0, j1;
