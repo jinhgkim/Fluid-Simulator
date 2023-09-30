@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="Viewport" style="flex-grow: 1;">
+        <ui:VisualElement name="TopStatusBar" style="height: 5%;">
+            <ui:Label tabindex="-1" text="Fluid Simulator" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="-unity-font-style: bold; margin-left: 10px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
